@@ -6,18 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @CrossOrigin(origins = "*") // フロントエンドとの接続許可
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
-    
+
     @Autowired
     private TaskRepository taskRepository;
-
 
     // 一覧取得
     @GetMapping
@@ -25,16 +21,20 @@ public class TaskController {
         return taskRepository.findAll();
     }
 
-
     // 新規作成
     @PostMapping
+    public Task createTask(@RequestBody Task task) {
+        return taskRepository.save(task);
+    }
+
+    // 更新
+    @PutMapping("/{id}")
     public Task updateTask(@PathVariable Long id, @RequestBody Task updated) {
         Task task = taskRepository.findById(id).orElseThrow();
         task.setTitle(updated.getTitle());
         task.setCompleted(updated.isCompleted());
         return taskRepository.save(task);
     }
-
 
     // 削除
     @DeleteMapping("/{id}")
